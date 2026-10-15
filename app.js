@@ -216,29 +216,38 @@
     $("#start-camp").textContent = CFG.CAMP_NAME || "배재대학교 로컬 창업 캠프";
     $("#start-program").textContent = CFG.PROGRAM_NAME || "LOCAL WAVE 0→1";
     const saved = load();
-    const resume = $("#btn-resume");
-    if (saved && !saved.__corrupt && saved.startedAt) {
+    const hasSave = !!(saved && !saved.__corrupt && saved.startedAt);
+    if (hasSave) {
       state = saved;
-      resume.hidden = false; resume.classList.replace("btn-ghost", "btn-coral");
-      resume.textContent = `이어서 항해 ▸ ${state.crew.name} (${countCollected()}/10)`;
       $("#crew-name").value = state.crew.name; $("#crew-dept").value = state.crew.dept;
-      $("#btn-start").textContent = "처음부터 다시 ▸"; $("#btn-start").classList.replace("btn-coral", "btn-ghost");
+      $("#btn-start-label").textContent = "이어서 항해";
+      $("#btn-start-reset").hidden = false;
+      const g = $("#start-greet"); g.hidden = false;
+      g.textContent = `다시 왔구나, ${state.crew.name} 선원! 발견 ${countCollected()}/10 기록은 그대로 있어요.`;
     } else {
       if (saved && saved.__corrupt) toast("이전 기록을 읽을 수 없어 새 항해를 시작해요.");
       state = freshState();
     }
     applySettings();
-    resume.addEventListener("click", () => { enterGame(); });
+    window.StartScene.mount({ motion: state.settings.motion !== false });
+    const nameEl = $("#crew-name");
+    const bubbleFor = () => window.StartScene.setBubble(nameEl.value.trim() ? `${nameEl.value.trim()}, 같이 출항하자냥!` : "같이 출항하자냥!");
+    bubbleFor(); nameEl.addEventListener("input", bubbleFor);
+
+    $("#btn-start-reset").addEventListener("click", () => confirmReset(() => { localStorage.removeItem(STORAGE_KEY); location.reload(); }));
+    $("#btn-arrive-go").addEventListener("click", () => { $("#arrive-overlay").hidden = true; enterGame(); });
+
     $("#form-start").addEventListener("submit", (e) => {
       e.preventDefault();
-      const name = $("#crew-name").value.trim(), dept = $("#crew-dept").value.trim();
-      $("#crew-name").closest(".field").classList.toggle("invalid", !name);
-      $("#crew-dept").closest(".field").classList.toggle("invalid", !dept);
+      const name = nameEl.value.trim(), dept = $("#crew-dept").value.trim();
+      nameEl.closest("label").classList.toggle("invalid", !name);
+      $("#crew-dept").closest("label").classList.toggle("invalid", !dept);
       $("#start-error").hidden = !!(name && dept);
       if (!name || !dept) return;
       if (state.startedAt) {
-        // 기존 기록이 있으면 확인 후 초기화
-        confirmReset(() => startNew(name, dept));
+        // 이어서 항해: 이름·학과를 고쳤으면 반영만 하고 기록은 유지
+        state.crew = { name, dept }; save();
+        window.StartScene.launch(() => enterGame());
         return;
       }
       startNew(name, dept);
@@ -249,9 +258,13 @@
     state.crew = { name, dept };
     state.startedAt = now();
     state.contentVersion = (window.__content && window.__content.contentVersion) || "";
+    puzzleState("P01")._arrived = true;
     save();
     Sync.push("start");
-    enterGame();
+    const first = PUZZLES[0];
+    $("#arrive-title").textContent = `${PHOTOS[first.resourceId]?.name || ""} 섬에 도착!`;
+    $("#arrive-text").textContent = `${name} 선원, 첫 번째 수수께끼가 기다리고 있어요.`;
+    window.StartScene.launch(() => { $("#arrive-overlay").hidden = false; $("#btn-arrive-go").focus(); });
   }
   function confirmReset(onYes) {
     openModal(`<h2>처음부터 다시 할까요?</h2>
@@ -679,7 +692,7 @@
       <div class="setting-row"><div><b>저장 상태</b><div class="muted">${storageOk ? "이 브라우저에 자동 저장 중" : "이 브라우저에서는 저장이 제한돼요"} · ${Sync.enabled() ? `진행자 시트 연결됨${Sync.queue().length ? ` (대기 ${Sync.queue().length}건)` : ""}` : "진행자 시트 미연결"}</div></div></div>
       <div class="danger-zone"><b>처음부터 다시</b><div class="muted">이 브라우저의 항해 기록(발견 카드, 아이디어)을 지우고 새로 시작해요.</div><div class="btn-row" style="margin-top:8px"><button type="button" class="btn btn-sm btn-ghost" id="btn-reset-all">기록 지우고 새로 시작</button></div></div>`, {
       onOpen: (m) => {
-        m.addEventListener("click", (e) => { const b = e.target.closest("[data-set]"); if (!b) return; const k = b.dataset.set; st[k] = !st[k]; b.setAttribute("aria-checked", st[k]); save(); applySettings(); });
+        m.addEventListener("click", (e) => { const b = e.target.closest("[data-set]"); if (!b) return; const k = b.dataset.set; st[k] = !st[k]; b.setAttribute("aria-checked", st[k]); save(); applySettings(); if (k === "motion" && window.StartScene) window.StartScene.setMotion(st[k]); });
         $("#btn-reset-all").onclick = () => confirmReset(() => { localStorage.removeItem(STORAGE_KEY); location.reload(); });
       },
     });

@@ -7,56 +7,70 @@
 <meta name="description" content="배재대학교 로컬 창업 캠프 LOCAL WAVE 0→1. 대전의 보물 10개를 발견하고 나만의 창업 항로를 만드는 웹 미궁.">
 <meta name="theme-color" content="#5CCADB">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%235CCADB'/%3E%3Crect x='3' y='6' width='10' height='6' fill='%23FFF8E7'/%3E%3Crect x='2' y='4' width='2' height='3' fill='%23F2B08A'/%3E%3Crect x='12' y='4' width='2' height='3' fill='%23F2B08A'/%3E%3Crect x='5' y='8' width='1' height='1' fill='%23243B4A'/%3E%3Crect x='10' y='8' width='1' height='1' fill='%23243B4A'/%3E%3Crect x='3' y='12' width='10' height='2' fill='%23236D75'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="styles.css?v=3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
 
-<!-- ===== S01 시작 화면 ===== -->
+<!-- ===== S01 시작 화면 (Claude Design 원본 이식) ===== -->
 <section id="screen-start" class="screen screen-start" data-screen="start">
-  <div class="sea-scene" aria-hidden="true">
-    <div class="sun"></div>
-    <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
-    <div class="island-far i1"></div><div class="island-far i2"></div><div class="island-far i3"></div>
-    <div class="sea-band b1"></div><div class="sea-band b2"></div><div class="sea-band b3"></div>
-    <div class="boat-wrap"><canvas class="boat" width="28" height="18"></canvas>
-      <div class="naru-on-boat"><canvas class="naru" data-mood="wave" width="16" height="16"></canvas></div>
-      <div class="bubble bubble-boat"><span class="bubble-tag">항해사 나루</span>같이 출항하자!</div>
-    </div>
-  </div>
+  <div class="start-root" id="start-root">
+    <canvas id="scene-canvas" aria-hidden="true"></canvas>
+    <canvas id="actor-canvas" aria-hidden="true"></canvas>
 
-  <div class="start-card panel">
-    <div class="tag tag-camp" id="start-camp">배재대학교 로컬 창업 캠프</div>
-    <div class="eyebrow" id="start-program">LOCAL WAVE 0→1</div>
-    <h1 class="title-pixel">미궁 <span class="chip chip-sea">대전 보물항해</span></h1>
-    <p class="lead">고양이 항해사 나루와 함께 대전의 섬 10곳을 돌며 수수께끼를 풀어요.<br>정답을 맞히면 그 섬의 자원 카드를 얻어요.</p>
-    <ol class="steps3">
-      <li><b>01</b>사진 관찰</li>
-      <li><b>02</b>단서 조합</li>
-      <li><b>03</b>자원 카드 수집</li>
-    </ol>
-    <form id="form-start" class="form-start" novalidate>
-      <div class="field">
-        <label for="crew-name">선원 이름</label>
-        <input id="crew-name" name="name" type="text" autocomplete="off" maxlength="20" placeholder="예: 김나루" required>
-      </div>
-      <div class="field">
-        <label for="crew-dept">학과</label>
-        <input id="crew-dept" name="dept" type="text" autocomplete="off" maxlength="30" placeholder="예: 경영학과" required>
-      </div>
-      <p class="form-error" id="start-error" role="alert" hidden>선원 이름과 학과를 모두 적어야 출항할 수 있어요.</p>
-      <div class="start-actions">
-        <button type="submit" class="btn btn-coral btn-lg" id="btn-start">출항하기 ▸</button>
-        <button type="button" class="btn btn-ghost" id="btn-resume" hidden>이어서 항해 ▸</button>
-      </div>
-    </form>
-    <div class="start-links">
-      <button type="button" class="link" data-open="howto">사용 방법</button>
-      <button type="button" class="link" data-open="sources">사진 출처</button>
-      <button type="button" class="link" data-open="settings">설정</button>
+    <div class="naru-bubble" id="start-bubble" aria-hidden="true">
+      <div class="bt">같이 출항하자냥!</div>
+      <div class="bn">항해사 나루</div>
     </div>
+
+    <div class="start-wrap">
+      <div class="start-card">
+        <div class="tag-camp" id="start-camp">배재대학교 로컬 창업 캠프</div>
+        <div class="start-head">
+          <span class="silk eyebrow-silk" id="start-program">LOCAL WAVE 0→1</span>
+          <div class="title-row">
+            <h1 class="start-title">미궁</h1>
+            <span class="title-chip">대전 보물항해</span>
+          </div>
+        </div>
+        <p class="start-lead">고양이 항해사 나루와 함께 대전의 섬 10곳을 돌며 수수께끼를 풀어요. 정답을 맞히면 그 섬의 자원 카드를 얻어요.</p>
+        <div class="steps3">
+          <div><span class="silk n">01</span><span>사진 관찰</span></div>
+          <div><span class="silk n">02</span><span>단서 조합</span></div>
+          <div><span class="silk n">03</span><span>자원 카드 수집</span></div>
+        </div>
+        <form id="form-start" class="form-start" novalidate>
+          <div class="start-fields">
+            <label>선원 이름<input id="crew-name" name="name" type="text" autocomplete="off" maxlength="10" placeholder="예: 김나루"></label>
+            <label>학과<input id="crew-dept" name="dept" type="text" autocomplete="off" maxlength="16" placeholder="예: 경영학과"></label>
+          </div>
+          <p class="form-error" id="start-error" role="alert" hidden>이름과 학과를 모두 적어 주세요.</p>
+          <div class="start-actions">
+            <button type="button" class="link" id="btn-start-reset" hidden>처음부터 다시</button>
+            <button type="submit" class="start-btn" id="btn-start"><span id="btn-start-label">출항하기</span><span class="silk" id="start-blink">▶</span></button>
+          </div>
+          <p class="greet" id="start-greet" hidden></p>
+        </form>
+        <div class="start-links">
+          <button type="button" class="link" data-open="howto">사용 방법</button>
+          <button type="button" class="link" data-open="sources">사진 출처</button>
+          <button type="button" class="link" data-open="settings">설정</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrive-overlay" id="arrive-overlay" hidden>
+      <div class="arrive-card">
+        <span class="silk arrive-eyebrow" id="arrive-eyebrow">ISLAND 01 / 10</span>
+        <span class="arrive-title" id="arrive-title">성심당 섬에 도착!</span>
+        <span class="arrive-text" id="arrive-text"></span>
+        <button type="button" class="start-btn" id="btn-arrive-go">첫 수수께끼 풀기 →</button>
+      </div>
+    </div>
+    <p class="map-note">대전의 자원을 섬으로 표현한 상상 지도예요.</p>
   </div>
-  <p class="map-note">대전의 자원을 섬으로 표현한 상상 지도예요.</p>
 </section>
 
 <!-- ===== 게임 공통 헤더 + 3열 ===== -->
@@ -147,7 +161,8 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<script src="config.js?v=3"></script>
-<script src="app.js?v=3"></script>
+<script src="config.js?v=4"></script>
+<script src="start-scene.js?v=4"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

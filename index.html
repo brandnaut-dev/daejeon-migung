@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>미궁 — 대전 보물항해 | 배재대학교 로컬 창업 캠프</title>
+<meta name="description" content="배재대학교 로컬 창업 캠프 LOCAL WAVE 0→1. 대전의 보물 10개를 발견하고 나만의 창업 항로를 만드는 웹 미궁.">
+<meta name="theme-color" content="#5CCADB">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'%3E%3Crect width='16' height='16' fill='%235CCADB'/%3E%3Crect x='3' y='6' width='10' height='6' fill='%23FFF8E7'/%3E%3Crect x='2' y='4' width='2' height='3' fill='%23F2B08A'/%3E%3Crect x='12' y='4' width='2' height='3' fill='%23F2B08A'/%3E%3Crect x='5' y='8' width='1' height='1' fill='%23243B4A'/%3E%3Crect x='10' y='8' width='1' height='1' fill='%23243B4A'/%3E%3Crect x='3' y='12' width='10' height='2' fill='%23236D75'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<!-- ===== S01 시작 화면 ===== -->
+<section id="screen-start" class="screen screen-start" data-screen="start">
+  <div class="sea-scene" aria-hidden="true">
+    <div class="sun"></div>
+    <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+    <div class="island-far i1"></div><div class="island-far i2"></div><div class="island-far i3"></div>
+    <div class="sea-band b1"></div><div class="sea-band b2"></div><div class="sea-band b3"></div>
+    <div class="boat-wrap"><canvas class="boat" width="28" height="18"></canvas>
+      <div class="naru-on-boat"><canvas class="naru" data-mood="wave" width="16" height="16"></canvas></div>
+      <div class="bubble bubble-boat"><span class="bubble-tag">항해사 나루</span>같이 출항하자!</div>
+    </div>
+  </div>
+
+  <div class="start-card panel">
+    <div class="tag tag-camp" id="start-camp">배재대학교 로컬 창업 캠프</div>
+    <div class="eyebrow" id="start-program">LOCAL WAVE 0→1</div>
+    <h1 class="title-pixel">미궁 <span class="chip chip-sea">대전 보물항해</span></h1>
+    <p class="lead">고양이 항해사 나루와 함께 대전의 섬 10곳을 돌며 수수께끼를 풀어요.<br>정답을 맞히면 그 섬의 자원 카드를 얻어요.</p>
+    <ol class="steps3">
+      <li><b>01</b>사진 관찰</li>
+      <li><b>02</b>단서 조합</li>
+      <li><b>03</b>자원 카드 수집</li>
+    </ol>
+    <form id="form-start" class="form-start" novalidate>
+      <div class="field">
+        <label for="crew-name">선원 이름</label>
+        <input id="crew-name" name="name" type="text" autocomplete="off" maxlength="20" placeholder="예: 김나루" required>
+      </div>
+      <div class="field">
+        <label for="crew-dept">학과</label>
+        <input id="crew-dept" name="dept" type="text" autocomplete="off" maxlength="30" placeholder="예: 경영학과" required>
+      </div>
+      <p class="form-error" id="start-error" role="alert" hidden>선원 이름과 학과를 모두 적어야 출항할 수 있어요.</p>
+      <div class="start-actions">
+        <button type="submit" class="btn btn-coral btn-lg" id="btn-start">출항하기 ▸</button>
+        <button type="button" class="btn btn-ghost" id="btn-resume" hidden>이어서 항해 ▸</button>
+      </div>
+    </form>
+    <div class="start-links">
+      <button type="button" class="link" data-open="howto">사용 방법</button>
+      <button type="button" class="link" data-open="sources">사진 출처</button>
+      <button type="button" class="link" data-open="settings">설정</button>
+    </div>
+  </div>
+  <p class="map-note">대전의 자원을 섬으로 표현한 상상 지도예요.</p>
+</section>
+
+<!-- ===== 게임 공통 헤더 + 3열 ===== -->
+<section id="screen-game" class="screen screen-game" data-screen="game" hidden>
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="title-pixel sm">미궁</span>
+      <span class="chip chip-sea">대전 보물항해</span>
+      <span class="topbar-camp">배재대학교 로컬 창업 캠프 · LOCAL WAVE 0→1</span>
+    </div>
+    <div class="topbar-right">
+      <span class="crew-label" id="crew-label">선원</span>
+      <div class="progress-pips" id="progress-pips" aria-label="발견 진행"></div>
+      <span class="progress-count" id="progress-count">0/10</span>
+      <button type="button" class="btn btn-sm btn-ghost" data-open="logbook">기록장</button>
+      <button type="button" class="btn btn-sm btn-ghost" data-open="settings" aria-label="설정">설정</button>
+    </div>
+  </header>
+
+  <div class="layout" id="main">
+    <!-- 왼쪽: 항로 -->
+    <aside class="col-route panel">
+      <div class="eyebrow">ROUTE</div>
+      <ol class="route" id="route"></ol>
+      <p class="route-note">앞 섬을 풀면 다음 섬이 열려요.</p>
+    </aside>
+
+    <!-- 가운데: 문제판 -->
+    <main class="col-main panel" id="puzzle-panel" aria-live="polite">
+      <!-- JS 렌더 -->
+    </main>
+
+    <!-- 오른쪽: 나루·힌트·기록 -->
+    <aside class="col-side">
+      <div class="panel side-naru">
+        <div class="naru-head">
+          <canvas class="naru" id="naru-side" data-mood="idle" width="16" height="16"></canvas>
+          <span class="chip chip-ink">항해사 나루</span>
+        </div>
+        <p class="naru-say" id="naru-say">사진부터 꼼꼼히 살펴보자. 단서 세 개가 모두 맞는 답을 찾아봐.</p>
+      </div>
+      <div class="panel side-hint">
+        <div class="eyebrow">HINT</div>
+        <div id="hint-box"></div>
+      </div>
+      <div class="panel side-log">
+        <div class="eyebrow-row"><span class="eyebrow">LOGBOOK</span><span class="muted" id="log-count">자원 카드 0/10</span></div>
+        <div class="log-mini" id="log-mini"></div>
+        <button type="button" class="btn btn-sm btn-ghost w-full" data-open="logbook">기록장 열기</button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ===== S07 아이디어 출항 ===== -->
+<section id="screen-idea" class="screen screen-idea" data-screen="idea" hidden>
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="title-pixel sm">미궁</span>
+      <span class="chip chip-sea">아이디어 출항</span>
+      <span class="topbar-camp">배재대학교 로컬 창업 캠프 · LOCAL WAVE 0→1</span>
+    </div>
+    <div class="topbar-right"><span class="crew-label" id="crew-label-2">선원</span></div>
+  </header>
+  <div class="narrow">
+    <div class="panel idea-panel">
+      <div class="idea-steps" id="idea-steps"></div>
+      <div id="idea-body"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== S08 결과 ===== -->
+<section id="screen-result" class="screen screen-result" data-screen="result" hidden>
+  <div class="narrow">
+    <div class="panel result-panel" id="result-panel"></div>
+  </div>
+</section>
+
+<!-- ===== 모달들 ===== -->
+<div class="modal-root" id="modal-root" hidden>
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal panel" role="dialog" aria-modal="true" id="modal" tabindex="-1">
+    <button type="button" class="modal-close btn btn-sm btn-ghost" data-close aria-label="닫기">닫기 ✕</button>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="config.js?v=1"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>

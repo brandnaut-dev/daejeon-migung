@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미궁 진행자 화면 — 선원 기록</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="styles.css?v=1">
+<style>
+  .admin { width: min(1360px, 100%); margin: 0 auto; padding: 24px; display: grid; gap: 16px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .kpi { border: 2px solid var(--ink); background: var(--white); padding: 10px 14px; }
+  .kpi b { display: block; font-family: var(--font-pixel); font-size: 28px; line-height: 1.1; }
+  .kpi span { font-size: 13px; color: var(--ink-soft); }
+  table.crew { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--white); }
+  table.crew th, table.crew td { border: 1px solid #C9D3D8; padding: 6px 8px; text-align: left; vertical-align: top; }
+  table.crew th { background: var(--sky); font-weight: 650; position: sticky; top: 0; }
+  table.crew td.idea { min-width: 260px; }
+  .bar { height: 10px; background: #E3E8EB; border: 1px solid var(--ink); position: relative; min-width: 80px; }
+  .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--leaf); }
+  .gate { max-width: 420px; margin: 80px auto; }
+  .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+  .status { font-size: 14px; color: var(--ink-soft); }
+  pre { font-size: 12px; background: var(--white); border: 2px solid var(--ink); padding: 10px; overflow: auto; }
+</style>
+</head>
+<body>
+<div class="admin" id="app"></div>
+<script src="config.js?v=1"></script>
+<script>
+(function () {
+  const CFG = window.MIGUNG_CONFIG || {};
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const key = new URLSearchParams(location.search).get("key") || sessionStorage.getItem("migung.admin");
+  const app = $("#app");
+
+  if (CFG.ADMIN_KEY && key !== CFG.ADMIN_KEY) {
+    app.innerHTML = `<div class="panel gate"><div class="eyebrow">CAPTAIN ONLY</div><h2>진행자 화면</h2><p class="muted">진행자 키를 입력하세요.</p>
+      <form id="gate"><div class="field"><label for="k">진행자 키</label><input id="k" type="password" autocomplete="off"></div><div class="btn-row end" style="margin-top:12px"><button class="btn">열기</button></div></form></div>`;
+    $("#gate").onsubmit = (e) => { e.preventDefault(); sessionStorage.setItem("migung.admin", $("#k").value.trim()); location.search = ""; };
+    return;
+  }
+  sessionStorage.setItem("migung.admin", key || "");
+
+  let rows = [];
+  function render() {
+    const total = rows.length, finished = rows.filter((r) => r.ideaText).length;
+    const avgCollected = total ? (rows.reduce((a, r) => a + (+r.collected || 0), 0) / total).toFixed(1) : "0";
+    const assisted = rows.reduce((a, r) => a + (+r.assisted || 0), 0);
+    app.innerHTML = `
+      <div class="toolbar">
+        <div><div class="eyebrow">CAPTAIN VIEW</div><h2 style="margin:0">미궁 선원 기록 <span class="muted">${esc(CFG.CAMP_NAME || "")}</span></h2></div>
+        <div class="btn-row"><button type="button" class="btn btn-sm btn-ghost" id="refresh">새로고침</button><button type="button" class="btn btn-sm btn-ghost" id="csv">CSV 내려받기</button><label class="status"><input type="checkbox" id="auto" checked> 15초마다 자동 갱신</label></div>
+      </div>
+      <p class="status" id="status"></p>
+      <div class="kpis">
+        <div class="kpi"><b>${total}</b><span>접속 선원</span></div>
+        <div class="kpi"><b>${finished}</b><span>아이디어 제출</span></div>
+        <div class="kpi"><b>${avgCollected}</b><span>평균 발견 카드 (/10)</span></div>
+        <div class="kpi"><b>${assisted}</b><span>함께 풀기 사용 (문항 수 합계)</span></div>
+      </div>
+      <div class="table-wrap panel" style="padding:0;max-height:70vh;overflow:auto">
+        <table class="crew"><thead><tr><th>이름</th><th>학과</th><th>진행</th><th>시도</th><th>힌트</th><th>함께</th><th>선택 자원</th><th>고객 / 문제</th><th>아이디어 한 문장</th><th>최근 갱신</th></tr></thead>
+        <tbody>${rows.length ? rows.map((r) => `<tr>
+          <td><b>${esc(r.name)}</b></td><td>${esc(r.dept)}</td>
+          <td><div class="bar"><i style="width:${(+r.collected || 0) * 10}%"></i></div><span class="muted">${esc(r.collected || 0)}/10 · ${esc(r.currentPuzzleId || "")}</span></td>
+          <td>${esc(r.attempts)}</td><td>${esc(r.hints)}</td><td>${esc(r.assisted)}</td>
+          <td>${esc(r.ideaResources)}</td><td>${esc(r.ideaCustomer)}${r.ideaProblem ? " / " + esc(r.ideaProblem) : ""}</td>
+          <td class="idea">${r.ideaText ? "우리는 <b>" + esc(r.ideaCustomer) + "</b>이(가) 겪는 <b>" + esc(r.ideaProblem) + "</b> 문제를 <b>" + esc(r.ideaResources) + "</b>을(를) 활용한 <b>" + esc(r.ideaText) + "</b>(으)로 해결한다." : '<span class="muted">아직</span>'}</td>
+          <td class="muted">${esc((r.updatedAt || "").replace("T", " ").slice(5, 16))}</td></tr>`).join("") : `<tr><td colspan="10" class="muted" style="padding:24px;text-align:center">아직 기록이 없어요.</td></tr>`}</tbody></table>
+      </div>
+      ${CFG.SHEET_ENDPOINT ? "" : `<div class="panel"><h3>구글 시트가 연결되지 않았어요</h3><p>config.js의 <code>SHEET_ENDPOINT</code>에 Apps Script 웹앱 URL을 넣으면 선원들의 기록이 이 화면과 구글 시트에 쌓여요. 설정 방법은 저장소의 <code>apps-script/README.md</code>를 보세요.</p>
+        <p class="muted">연결 전에는 학생이 결과 화면에서 내려받은 JSON 파일을 아래에 붙여 넣어 확인할 수 있어요.</p>
+        <textarea id="paste" rows="4" style="width:100%;border:2px solid var(--ink);padding:8px" placeholder='{"crew":...} 파일 내용을 붙여 넣고 추가를 누르세요'></textarea>
+        <div class="btn-row end" style="margin-top:8px"><button type="button" class="btn btn-sm" id="add">추가</button></div></div>`}`;
+    $("#refresh").onclick = fetchRows;
+    $("#csv").onclick = downloadCsv;
+    const add = $("#add"); if (add) add.onclick = () => { try { const j = JSON.parse($("#paste").value); rows.unshift(j.summary || j); render(); } catch (e) { alert("JSON을 읽을 수 없어요."); } };
+  }
+  function setStatus(t) { const s = $("#status"); if (s) s.textContent = t; }
+  async function fetchRows() {
+    if (!CFG.SHEET_ENDPOINT) { render(); setStatus("시트 미연결 — 로컬 보기 모드"); return; }
+    setStatus("불러오는 중…");
+    try {
+      const r = await fetch(CFG.SHEET_ENDPOINT + "?action=crew&key=" + encodeURIComponent(CFG.ADMIN_KEY || ""), { cache: "no-store" });
+      const j = await r.json();
+      rows = (j.rows || []).sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+      render(); setStatus("갱신 " + new Date().toLocaleTimeString("ko-KR") + " · " + rows.length + "명");
+    } catch (e) { render(); setStatus("불러오기 실패: " + e.message + " — 엔드포인트 URL과 배포 권한(모든 사용자)을 확인하세요."); }
+  }
+  function downloadCsv() {
+    const cols = ["name", "dept", "collected", "attempts", "hints", "assisted", "ideaResources", "ideaCustomer", "ideaProblem", "ideaText", "startedAt", "updatedAt", "sessionId", "puzzleDetail"];
+    const q = (v) => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+    const csv = "﻿" + cols.join(",") + "\n" + rows.map((r) => cols.map((c) => q(r[c])).join(",")).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "미궁_선원기록.csv"; a.click();
+  }
+  render(); fetchRows();
+  setInterval(() => { const a = $("#auto"); if (a && a.checked && CFG.SHEET_ENDPOINT) fetchRows(); }, 15000);
+})();
+</script>
+</body>
+</html>

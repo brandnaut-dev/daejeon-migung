@@ -7,7 +7,7 @@
   "use strict";
   const W = 240, INK = "#243B4A";
   // 나섬이(배재대 호랑이 마스코트) 9×7: o 주황, k 줄무늬·외곽, w 주둥이, p 코, e 눈
-  const HEAD = [".k.....k.", "kok...kok", "kookkkook", "koookoook", "kkeoooekk", "kowwpwwok", ".kwwwwwk."];
+  const HEAD = [".k.....k.", "kookokook", "koooooook", "keoooooek", "kowwwwwok", "kowwpwwok", ".kwwwwwk."];
   const CATS = {
     "치즈": { o: "#F2A33A", w: "#FFF7EA", k: "#243B4A", p: "#E8667A", e: "#243B4A" },
     "구름": { o: "#A7A9B4", w: "#F4F4F6", k: "#243B4A", p: "#F4A3A8", e: "#243B4A" },

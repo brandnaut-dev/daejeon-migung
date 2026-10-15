@@ -124,25 +124,25 @@
   const PAL = { k: "#243B4A", o: "#F2A33A", c: "#FFF4D6", a: "#F2B08A", t: "#236D75", p: "#E8667A", e: "#243B4A", w: "#FFF7EA", y: "#F6CD69" };
   // 나섬이 16×16 — o 주황 몸, k 줄무늬·외곽, w 주둥이, p 코, e 눈, t 스카프
   const BASE = [
-    "..kk........kk..",
-    ".kook......kook.",
-    ".kooook..kooook.",
-    ".kookookkookook.",
-    ".koookokkokoook.",
-    ".kkooooooooookk.",
-    ".kooeooooooeook.",
-    ".kkoowwwwwwookk.",
-    ".koowwwkppkwwook",
-    ".koowwwwkkwwwook",
-    "..kooowwwwooook.",
-    "..kkkttttttkkk..",
-    "...kooooooook...",
-    "...kokookokook..",
-    "...kook..kook...",
-    "...kkk...kkk....",
+    "...kk......kk...",
+    "..kook....kook..",
+    ".koooookkoooook.",
+    ".kookokookokook.",
+    "kooooooooooooook",
+    "kkooooooooooookk",
+    "kooeoooooooeoook",
+    "kkoowwwwwwwwookk",
+    "koowwwwkppkwwwok",
+    "koowwwwwkkwwwwok",
+    ".koowwwwppwwwook",
+    "..koooowwwwoook.",
+    "...kkkttttttkkk.",
+    "....koookkooook.",
+    "....kook..kook..",
+    "....kkk...kkk...",
   ];
   const variant = (edits) => { const r = BASE.slice(); edits.forEach(([i, s]) => (r[i] = s)); return r; };
-  const NARU = { idle: BASE, wave: variant([[6, ".kokkoooooookkok".slice(0, 16)], [12, "ok.kooooooook..."], [13, "k..koookkoook..."]]), think: variant([[6, ".kooeoooooookkk."], [0, "..kk........kk.y"]]), cheer: variant([[6, ".kokkoooooookkok".slice(0, 16)], [9, ".koowwwkkkkwwook"], [0, "y.kk........kk.y"]]), help: variant([[6, ".kowwoooooowwok.".slice(0, 16)], [11, "..kkkttttttkkk.y"]]) };
+  const NARU = { idle: BASE, wave: variant([[6, "kokkoooooookkook"], [13, "ok..koookkooook."], [14, "k...kook..kook.."]]), think: variant([[6, "kooeooooooookkok"], [0, "...kk......kk..y"]]), cheer: variant([[6, "kokkoooooookkook"], [9, "koowwwwkkkkwwwok"], [0, "y..kk......kk..y"]]), help: variant([[6, "kowwwooooowwwook"], [12, "...kkkttttttkkky"]]) };
   function drawPix(canvas, rows) { const h = rows.length, w = rows[0].length; canvas.width = w; canvas.height = h; const c = canvas.getContext("2d"); rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) { const col = PAL[row[x]]; if (col) { c.fillStyle = col; c.fillRect(x, y, 1, 1); } } }); }
   function setNaru(mood, text) { const c = $("#naru-side"); if (c) { c.dataset.mood = mood; drawPix(c, NARU[mood] || NARU.idle); } const s = $("#naru-say"); if (s && text) s.textContent = text; }
 

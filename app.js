@@ -132,8 +132,8 @@
     "kooooookkookkookkooooook",
     "kooooooooooooooooooooook",
     "kkkooooooooooooooooookkk",
-    "kkkooooheeooooeehooookkk",
-    "kkoooooeeeooooeeeoooookk",
+    "kkkoooooeooooooeoooookkk",
+    "kkooooooooooooooooooookk",
     "kkkooooooooooooooooookkk",
     "kkoooooowwwwwwwwooooookk",
     "kooooowwwwwnnwwwwwoooook",
@@ -150,12 +150,12 @@
     "........................",
   ];
   const variant = (edits) => { const r = BASE.slice(); edits.forEach(([i, s]) => (r[i] = s)); return r; };
-  const HAPPY8 = "kkkooookkkooookkkooookkk", HAPPY9 = "kkooooooooooooooooooookk";
+  const HAPPY8 = "kkkooookokooookokooookkk", HAPPY9 = "kkooooooooooooooooooookk";
   const NARU = {
     idle: BASE,
     wave: variant([[8, HAPPY8], [9, HAPPY9]]),
     cheer: variant([[8, HAPPY8], [9, HAPPY9], [0, "y...kk............kk...y"], [14, ".kooooowwkkkkkkwwoooook."]]),
-    think: variant([[8, "kkkooookkkooooeehooookkk"], [9, "kkooooooooooooeeeoooookk"], [1, "...kppk..........kppk..y"]]),
+    think: variant([[8, "kkkooookokoooooeoooookkk"], [9, "kkooooooooooooooooooookk"], [1, "...kppk..........kppk..y"]]),
     help: variant([[0, "....kk............kk...y"], [15, ".koooooowwwwwwwwooooook."]]),
   };
   function drawPix(canvas, rows) { const h = rows.length, w = rows[0].length; canvas.width = w; canvas.height = h; const c = canvas.getContext("2d"); rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) { const col = PAL[row[x]]; if (col) { c.fillStyle = col; c.fillRect(x, y, 1, 1); } } }); }

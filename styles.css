@@ -206,7 +206,7 @@ h3 { font-size: 19px; font-weight: 650; margin: 0 0 8px; }
 .puzzle-head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .puzzle-story { margin: 2px 0 10px; color: var(--ink-soft); font-size: 16px; }
 .photo-row { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(220px, 1fr); gap: 12px; align-items: start; margin-bottom: 8px; }
-.photo-frame { position: relative; border: var(--border); background: var(--cream-2); box-shadow: var(--shadow-sm); aspect-ratio: 16 / 9; max-height: 236px; width: 100%; display: grid; place-items: center; overflow: hidden; }
+.photo-frame { position: relative; border: var(--border); background: var(--cream-2); box-shadow: var(--shadow-sm); aspect-ratio: 16 / 9; max-height: 330px; width: 100%; display: grid; place-items: center; overflow: hidden; }
 .photo-frame img { width: 100%; height: 100%; object-fit: contain; image-rendering: auto; }
 .photo-frame .photo-tag { position: absolute; left: 0; top: 0; }
 .photo-frame .photo-zoom { position: absolute; right: 8px; bottom: 8px; }
@@ -400,7 +400,7 @@ h3 { font-size: 19px; font-weight: 650; margin: 0 0 8px; }
 
 /* 낮은 화면(1366×768 등): 사진·여백을 더 줄여 제출 버튼까지 한 화면에 */
 @media (min-width: 1024px) and (max-height: 820px) {
-  .photo-frame { max-height: 190px; }
+  .photo-frame { max-height: 250px; }
   .photo-row { grid-template-columns: minmax(0, 1fr) minmax(220px, 1fr); }
   .puzzle-story { display: none; }
   h2 { font-size: 21px; }
@@ -409,3 +409,20 @@ h3 { font-size: 19px; font-weight: 650; margin: 0 0 8px; }
   .question { font-size: 17px; margin: 4px 0 6px; }
   .layout { padding-block: 12px 24px; }
 }
+
+/* ---------- v2: 제시어 입력 · 타이머 ---------- */
+.timer { font-family: var(--font-pixel); font-weight: 700; font-size: 18px; background: var(--ink); color: var(--yellow); padding: 4px 10px; border-radius: 3px; font-variant-numeric: tabular-nums; }
+.timer-pen { font-family: var(--font-pixel); font-size: 12px; color: var(--coral-deep); min-width: 36px; }
+.riddle { border: 2px solid var(--ink); background: var(--sky); padding: 12px 14px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.riddle .eyebrow { color: var(--primary); }
+.riddle p { margin: 0; font-size: 16px; line-height: 1.55; }
+.answer-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; margin-top: 10px; }
+.answer-label { font-family: var(--font-pixel); font-weight: 700; font-size: 14px; letter-spacing: 0.1em; color: var(--coral-deep); }
+#answer-input { width: 100%; min-height: 52px; padding: 10px 14px; border: 3px solid var(--ink); background: var(--white); font-family: var(--font-pixel); font-size: 22px; color: var(--ink); box-shadow: inset 0 3px 0 #E9E2CF; }
+#answer-input:focus { outline: 3px solid var(--yellow); outline-offset: 1px; }
+#answer-input:disabled { background: var(--leaf); }
+#answer-input.shake { animation: shake 260ms; border-color: var(--danger); }
+@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.btn small { font-size: 12px; font-weight: 500; opacity: 0.85; }
+@media (max-width: 767px) { .answer-row { grid-template-columns: 1fr; } .timer { font-size: 16px; } }
+@media (min-width: 1024px) and (max-height: 820px) { .riddle p { font-size: 15px; } }

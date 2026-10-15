@@ -504,7 +504,7 @@
   }
   function openSources() {
     const rows = PUZZLES.map((p) => PHOTOS[p.resourceId]).map((ph) => `<tr><td><b>${esc(ph.name)}</b></td><td>${esc(ph.author)}</td><td>${esc(ph.date)}</td><td><a href="${esc(ph.license_url || ph.source)}" target="_blank" rel="noopener">${esc(ph.license)}</a></td><td><a href="${esc(ph.source)}" target="_blank" rel="noopener">Wikimedia Commons</a></td></tr>`).join("");
-    openModal(`<h2>사진 출처</h2><p class="muted">모든 사진은 Wikimedia Commons의 공개 라이선스 사진이에요. 자르기와 색상 변경 없이 축소만 했어요. 기록사진이라 현재 모습과 다를 수 있어요. 실비김치 방의 사진은 일반 배추김치 사진이에요.</p>
+    openModal(`<h2>사진 출처</h2><p class="muted">실비김치를 뺀 모든 사진은 Wikimedia Commons의 공개 라이선스 사진이에요. 자르기와 색상 변경 없이 축소만 했어요. 기록사진이라 현재 모습과 다를 수 있어요. 실비김치 사진은 대표가 제공한 사진이에요.</p>
       <div class="table-wrap"><table class="src-table"><thead><tr><th>장소</th><th>저작자</th><th>촬영 시점</th><th>라이선스</th><th>원문</th></tr></thead><tbody>${rows}</tbody></table></div>
       <p class="muted" style="margin-top:14px">캐릭터 고지: '나섬이'는 배재대학교의 캐릭터예요. 이 게임의 픽셀 호랑이는 배재대 캠프용으로 자체 제작한 그림이며, 학교의 공식 이미지·로고를 사용하지 않았어요. 캠프 외 용도로는 쓰지 않아요.</p>`, { wide: true });
   }

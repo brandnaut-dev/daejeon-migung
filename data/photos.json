@@ -54,14 +54,14 @@
   "modification": "Commons 제공 1600px 축소본. 자르기와 색상 변경 없음."
  },
  {
-  "title": "File:Baechu kimchi.jpg",
+  "title": "실비김치",
   "url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Baechu_kimchi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-  "source": "https://commons.wikimedia.org/wiki/File:Baechu_kimchi.jpg",
-  "author": "최광모",
-  "license": "CC BY-SA 4.0",
-  "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
-  "date": "2015-02-19 19:24:29",
-  "description": "2015년 2월 14일과 2015년 2월 19일 사이 최광모가 촬영한 사진",
+  "source": "",
+  "author": "브랜드넛 제공",
+  "license": "캠프 내부 사용",
+  "license_url": "",
+  "date": "2026",
+  "description": "대전 실비김치",
   "dimensions": [
    5472,
    3648
@@ -69,7 +69,7 @@
   "id": "04_silbi",
   "name": "실비김치",
   "file": "photos/04_silbi.jpg",
-  "modification": "Commons 제공 1600px 축소본. 자르기와 색상 변경 없음."
+  "modification": "대표 제공 사진. 캠프용으로만 사용."
  },
  {
   "title": "File:Daejeon hanwha Life Ballpark 2025.jpg",
@@ -177,6 +177,24 @@
   "id": "10_science",
   "name": "국립중앙과학관",
   "file": "photos/10_science.jpg",
+  "modification": "Commons 제공 1600px 축소본. 자르기와 색상 변경 없음."
+ },
+ {
+  "title": "File:Paichai school east-1.jpg",
+  "url": "https://upload.wikimedia.org/wikipedia/commons/6/65/Paichai_school_east-1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "source": "https://commons.wikimedia.org/wiki/File:Paichai_school_east-1.jpg",
+  "author": "Gapo",
+  "license": "CC BY-SA 3.0",
+  "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+  "date": "2011-05-28",
+  "description": "배재학당 동관, 현 배재역사박물관, 서울특별시  기념물  \n제16호, 서울 중구  정동 34-5호, 1916년 건립",
+  "dimensions": [
+   2784,
+   1848
+  ],
+  "id": "11_paichai",
+  "name": "배재학당·배재대학교",
+  "file": "photos/11_paichai.jpg",
   "modification": "Commons 제공 1600px 축소본. 자르기와 색상 변경 없음."
  }
 ]

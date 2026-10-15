@@ -468,7 +468,8 @@
         <button type="button" class="btn btn-ghost" id="btn-export">기록 저장 (JSON)</button>
       </div>
       <p class="save-state ${Sync.enabled() ? (Sync.queue().length ? "warn" : "ok") : ""}" id="save-state">${Sync.enabled() ? (Sync.queue().length ? "진행자 시트로 아직 보내지 못한 기록이 있어요. 인터넷이 연결되면 자동으로 다시 보내요." : "진행자 시트에 기록을 보냈어요. 순위는 진행자가 발표해요.") : "이 기록은 이 브라우저에만 저장돼요. 진행자에게 화면을 보여 주세요."}</p>
-      <div class="btn-row" style="margin-top:20px"><button type="button" class="link" id="btn-restart">처음부터 다시 하기</button><button type="button" class="link" data-open="sources">사진 출처</button></div>`;
+      <div class="btn-row" style="margin-top:20px"><button type="button" class="link" id="btn-restart">처음부터 다시 하기</button><button type="button" class="link" data-open="sources">사진 출처</button></div>
+      <p class="muted" style="margin-top:10px;font-size:12px">사진: Wikimedia Commons 공개 라이선스 · 나섬이는 배재대학교 캐릭터이며 이 게임의 픽셀 호랑이는 캠프용 자체 제작</p>`;
     $("#btn-copy").onclick = async (e) => { try { await navigator.clipboard.writeText(shareText()); e.target.textContent = "복사했어요 ✓"; } catch (err) { toast("복사가 막혔어요. 화면을 캡처해 주세요."); } };
     $("#btn-export").onclick = () => { const blob = new Blob([JSON.stringify({ ...state, summary: s }, null, 2)], { type: "application/json" }); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `미궁_${state.crew.name}_${state.crew.dept}.json`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); };
     $("#btn-restart").onclick = () => confirmReset(() => { localStorage.removeItem(STORAGE_KEY); location.reload(); });
@@ -489,7 +490,8 @@
   function openSources() {
     const rows = PUZZLES.map((p) => PHOTOS[p.resourceId]).map((ph) => `<tr><td><b>${esc(ph.name)}</b></td><td>${esc(ph.author)}</td><td>${esc(ph.date)}</td><td><a href="${esc(ph.license_url || ph.source)}" target="_blank" rel="noopener">${esc(ph.license)}</a></td><td><a href="${esc(ph.source)}" target="_blank" rel="noopener">Wikimedia Commons</a></td></tr>`).join("");
     openModal(`<h2>사진 출처</h2><p class="muted">모든 사진은 Wikimedia Commons의 공개 라이선스 사진이에요. 자르기와 색상 변경 없이 축소만 했어요. 기록사진이라 현재 모습과 다를 수 있어요. 실비김치 방의 사진은 일반 배추김치 사진이에요.</p>
-      <div class="table-wrap"><table class="src-table"><thead><tr><th>장소</th><th>저작자</th><th>촬영 시점</th><th>라이선스</th><th>원문</th></tr></thead><tbody>${rows}</tbody></table></div>`, { wide: true });
+      <div class="table-wrap"><table class="src-table"><thead><tr><th>장소</th><th>저작자</th><th>촬영 시점</th><th>라이선스</th><th>원문</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <p class="muted" style="margin-top:14px">캐릭터 고지: '나섬이'는 배재대학교의 캐릭터예요. 이 게임의 픽셀 호랑이는 배재대 캠프용으로 자체 제작한 그림이며, 학교의 공식 이미지·로고를 사용하지 않았어요. 캠프 외 용도로는 쓰지 않아요.</p>`, { wide: true });
   }
   function openHowto() {
     openModal(`<h2>사용 방법</h2>

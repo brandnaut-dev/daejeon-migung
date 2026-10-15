@@ -121,28 +121,43 @@
   setInterval(() => Sync.flush(), 20000);
 
   // ---------- 픽셀 아트(나섬이 옆패널) ----------
-  const PAL = { k: "#243B4A", o: "#F2A33A", c: "#FFF4D6", a: "#F2B08A", t: "#236D75", p: "#E8667A", e: "#243B4A", w: "#FFF7EA", y: "#F6CD69" };
-  // 나섬이 16×16 — o 주황 몸, k 줄무늬·외곽, w 주둥이, p 코, e 눈, t 스카프
+  const PAL = { k: "#243B4A", o: "#F2A33A", c: "#FFF4D6", a: "#F2B08A", t: "#236D75", p: "#F08AA0", n: "#E0675D", b: "#F7B2B7", e: "#243B4A", h: "#FFFFFF", w: "#FFF7EA", y: "#F6CD69" };
+  // 나섬이 24×24 (72px 표시 = 3배) — o 주황, k 외곽·줄무늬, w 주둥이, n 코, p 혀·귀속, b 볼터치, e 눈, h 눈 하이라이트, t 스카프
   const BASE = [
-    "...kk......kk...",
-    "..kook....kook..",
-    ".koooookkoooook.",
-    ".kookokookokook.",
-    "kooooooooooooook",
-    "kkooooooooooookk",
-    "kooeoooooooeoook",
-    "kkoowwwwwwwwookk",
-    "koowwwwkppkwwwok",
-    "koowwwwwkkwwwwok",
-    ".koowwwwppwwwook",
-    "..koooowwwwoook.",
-    "...kkkttttttkkk.",
-    "....koookkooook.",
-    "....kook..kook..",
-    "....kkk...kkk...",
+    "....kkk..........kkk....",
+    "...koook........koook...",
+    "...kopook......koopok...",
+    "...koooookkkkkkoooook...",
+    "..kooookokooookokooook..",
+    ".koooookokooookokoooook.",
+    "kooooooooooooooooooooook",
+    "kkoooooooooooooooooooookk".slice(0, 24),
+    "kkkoooohe" + "oooooo" + "he" + "oooo" + "kkk",
+    "kkooooo" + "ee" + "oooooo" + "ee" + "ooooo" + "kk",
+    "kobb" + "oooooooooooooooo" + "bbok",
+    "kobboooowwwwwwwwoooobbok",
+    "koooooowwwwnnwwwwooooook",
+    "koooooowwwwwwwwwwooooook",
+    ".kooooowwwkkkkwwwoooook.",
+    ".koooooowwppppwwooooook.",
+    "..kooooooowwwwoooooook..",
+    "...kooooooooooooooook...",
+    "....kkkooooooooookkk....",
+    "......kkkkkkkkkkkk......",
+    ".......kttttttttk.......",
+    "........kkkkkkkk........",
+    "........................",
+    "........................",
   ];
   const variant = (edits) => { const r = BASE.slice(); edits.forEach(([i, s]) => (r[i] = s)); return r; };
-  const NARU = { idle: BASE, wave: variant([[6, "kokkoooooookkook"], [13, "ok..koookkooook."], [14, "k...kook..kook.."]]), think: variant([[6, "kooeooooooookkok"], [0, "...kk......kk..y"]]), cheer: variant([[6, "kokkoooooookkook"], [9, "koowwwwkkkkwwwok"], [0, "y..kk......kk..y"]]), help: variant([[6, "kowwwooooowwwook"], [12, "...kkkttttttkkky"]]) };
+  const HAPPY8 = "kkkooookk" + "oooooo" + "kk" + "oooo" + "kkk", HAPPY9 = "kkooooooooooooooooooookk";
+  const NARU = {
+    idle: BASE,
+    wave: variant([[8, HAPPY8], [9, HAPPY9]]),
+    cheer: variant([[8, HAPPY8], [9, HAPPY9], [0, "y...kkk..........kkk...y"], [14, ".kooooowwkkkkkkwwoooook."]]),
+    think: variant([[8, "kkkooookk" + "oooooo" + "he" + "oooo" + "kkk"], [9, "kkooooooo" + "oooooo" + "ee" + "ooooo" + "kk"], [1, "...koook........koook..y"]]),
+    help: variant([[0, "....kkk..........kkk...y"], [15, ".koooooowwwwwwwwooooook."]]),
+  };
   function drawPix(canvas, rows) { const h = rows.length, w = rows[0].length; canvas.width = w; canvas.height = h; const c = canvas.getContext("2d"); rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) { const col = PAL[row[x]]; if (col) { c.fillStyle = col; c.fillRect(x, y, 1, 1); } } }); }
   function setNaru(mood, text) { const c = $("#naru-side"); if (c) { c.dataset.mood = mood; drawPix(c, NARU[mood] || NARU.idle); } const s = $("#naru-say"); if (s && text) s.textContent = text; }
 

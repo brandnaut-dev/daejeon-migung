@@ -7,7 +7,7 @@
   "use strict";
   const W = 240, INK = "#243B4A";
   // 나섬이(배재대 호랑이 마스코트) 9×7: o 주황, k 줄무늬·외곽, w 주둥이, p 코, e 눈
-  const HEAD = [".k.....k.", "kookokook", "koooooook", "keoooooek", "kowwwwwok", "kowwpwwok", ".kwwwwwk."];
+  const HEAD = [".kk.....kk.", "kooookooook", "koeoooooeok", "kowwwwwwwok", "kowwwpwwwok", ".kwwkkkwwk.", "..kkkkkkk.."];
   const CATS = {
     "치즈": { o: "#F2A33A", w: "#FFF7EA", k: "#243B4A", p: "#E8667A", e: "#243B4A" },
     "구름": { o: "#A7A9B4", w: "#F4F4F6", k: "#243B4A", p: "#F4A3A8", e: "#243B4A" },
@@ -84,16 +84,16 @@
       px(bx + 23 + w, y, 1, 1, INK);
     }
     px(bx + 23, by + 22, Math.floor(17 * .7) + 2, 1, INK);
-    const hx = bx + 8, hy = by + 17;
+    const hx = bx + 7, hy = by + 17;
     HEAD.forEach((row, y) => [...row].forEach((ch, x) => { if (cat[ch]) px(hx + x, hy + y, 1, 1, cat[ch]); }));
-    px(hx + 2, hy - 2, 5, 1, INK); px(hx + 1, hy - 1, 7, 1, INK); px(hx + 2, hy - 1, 5, 1, "#FFF8E7"); px(hx + 4, hy - 3, 1, 1, "#E8667A");
+    px(hx + 3, hy - 2, 5, 1, INK); px(hx + 2, hy - 1, 7, 1, INK); px(hx + 3, hy - 1, 5, 1, "#FFF8E7"); px(hx + 5, hy - 3, 1, 1, "#E8667A");
     const top = by + 24;
     for (let row = 0; row < 8; row++) {
       const inset = row < 2 ? 0 : row - 1, x0 = bx + 2 + inset, x1 = bx + 37 - inset;
       px(x0, top + row, x1 - x0 + 1, 1, row === 0 || row === 7 ? INK : row === 2 ? "#FFF8E7" : "#E8667A");
       px(x0, top + row, 1, 1, INK); px(x1, top + row, 1, 1, INK);
     }
-    px(hx + 1, top, 2, 1, cat.w); px(hx + 6, top, 2, 1, cat.w);
+    px(hx + 2, top, 2, 1, cat.w); px(hx + 7, top, 2, 1, cat.w);
     px(bx + 28, top + 3, 3, 3, INK); px(bx + 29, top + 4, 1, 1, "#DDF5F5");
     for (let x = bx; x < bx + 40; x += 2) px(x + (t % 2), top + 8, 1, 1, "#FFF8E7");
   }

@@ -120,11 +120,29 @@
   window.addEventListener("online", () => Sync.flush());
   setInterval(() => Sync.flush(), 20000);
 
-  // ---------- 픽셀 아트(나루 옆패널) ----------
-  const PAL = { k: "#243B4A", c: "#FFF4D6", a: "#F2B08A", t: "#236D75", p: "#E0675D", e: "#243B4A", w: "#FFFFFF", y: "#F6CD69" };
-  const BASE = ["..kk........kk..", "..kak......kak..", "..kaak....kaak..", "..kaaakkkkaaak..", "..kccccccccccck.", ".kcccccccccccck.", ".kcceccccccecck.", ".kcccccccccccck.", ".kccccckpkcccck.", ".kcccccckccccck.", "..kccccccccccck.", "..kkkttttttkkk..", "...kccccccck....", "...kcccccccck...", "...kcck..kcck...", "...kkk...kkk...."];
+  // ---------- 픽셀 아트(나섬이 옆패널) ----------
+  const PAL = { k: "#243B4A", o: "#F2A33A", c: "#FFF4D6", a: "#F2B08A", t: "#236D75", p: "#E8667A", e: "#243B4A", w: "#FFF7EA", y: "#F6CD69" };
+  // 나섬이 16×16 — o 주황 몸, k 줄무늬·외곽, w 주둥이, p 코, e 눈, t 스카프
+  const BASE = [
+    "..kk........kk..",
+    ".kook......kook.",
+    ".kooook..kooook.",
+    ".koooookkoooook.",
+    ".koookokkokoook.",
+    ".kooooooooooook.",
+    ".kooeooooooeook.",
+    ".kooowwwwwwooook",
+    ".koowwwkppkwwook",
+    ".koowwwwkkwwwook",
+    "..kooowwwwooook.",
+    "..kkkttttttkkk..",
+    "...kooooooook...",
+    "...koookkoook...",
+    "...kook..kook...",
+    "...kkk...kkk....",
+  ];
   const variant = (edits) => { const r = BASE.slice(); edits.forEach(([i, s]) => (r[i] = s)); return r; };
-  const NARU = { idle: BASE, wave: variant([[6, ".kckkcccccckkck."], [12, "ak.kccccccck...."], [13, "k..kcccccccck..."]]), think: variant([[6, ".kcceccccckkcck."], [0, "..kk........kk.y"]]), cheer: variant([[6, ".kckkcccccckkck."], [9, ".kccccckkkccccck"], [0, "y.kk........kk.y"]]), help: variant([[6, ".kcweccccccewck."], [11, "..kkkttttttkkk.y"]]) };
+  const NARU = { idle: BASE, wave: variant([[6, ".kokkoooooookkok".slice(0, 16)], [12, "ok.kooooooook..."], [13, "k..koookkoook..."]]), think: variant([[6, ".kooeoooooookkk."], [0, "..kk........kk.y"]]), cheer: variant([[6, ".kokkoooooookkok".slice(0, 16)], [9, ".koowwwkkkkwwook"], [0, "y.kk........kk.y"]]), help: variant([[6, ".kowwoooooowwok.".slice(0, 16)], [11, "..kkkttttttkkk.y"]]) };
   function drawPix(canvas, rows) { const h = rows.length, w = rows[0].length; canvas.width = w; canvas.height = h; const c = canvas.getContext("2d"); rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) { const col = PAL[row[x]]; if (col) { c.fillStyle = col; c.fillRect(x, y, 1, 1); } } }); }
   function setNaru(mood, text) { const c = $("#naru-side"); if (c) { c.dataset.mood = mood; drawPix(c, NARU[mood] || NARU.idle); } const s = $("#naru-say"); if (s && text) s.textContent = text; }
 
@@ -167,7 +185,7 @@
     applySettings();
     window.StartScene.mount({ motion: state.settings.motion !== false });
     const nameEl = $("#crew-name");
-    const bubbleFor = () => window.StartScene.setBubble(nameEl.value.trim() ? `${nameEl.value.trim()}, 같이 출항하자냥!` : "같이 출항하자냥!");
+    const bubbleFor = () => window.StartScene.setBubble(nameEl.value.trim() ? `${nameEl.value.trim()}, 같이 출항하자! 어흥` : "같이 출항하자! 어흥");
     bubbleFor(); nameEl.addEventListener("input", bubbleFor);
     $("#btn-start-reset").addEventListener("click", () => confirmReset(() => { localStorage.removeItem(STORAGE_KEY); location.reload(); }));
     $("#btn-arrive-go").addEventListener("click", () => { $("#arrive-overlay").hidden = true; enterGame(); });

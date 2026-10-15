@@ -1,14 +1,15 @@
 /* ============================================================
    시작 화면 픽셀 씬 — Claude Design "미궁 시작 화면" 원본 이식
    240px 폭 저해상도 캔버스를 화면에 꽉 채워 확대(픽셀 유지).
-   scene: 하늘·바다·섬·항로 (정적) / actors: 반짝임·갈매기·배·나루 (260ms 틱)
+   scene: 하늘·바다·섬·항로 (정적) / actors: 반짝임·갈매기·배·나섬이 (260ms 틱)
    ============================================================ */
 (function () {
   "use strict";
   const W = 240, INK = "#243B4A";
-  const HEAD = [".k.....k.", "kpk...kpk", "kook.kook", "koooooook", "koeooeook", "kowwpwwok", "kwwwwwwwk"];
+  // 나섬이(배재대 호랑이 마스코트) 9×7: o 주황, k 줄무늬·외곽, w 주둥이, p 코, e 눈
+  const HEAD = [".k.....k.", "kok...kok", "kookkkook", "koooooook", "koeoooeok", "kowwpwwok", ".kwwwwwk."];
   const CATS = {
-    "치즈": { o: "#F29A4A", w: "#FFF7EA", k: "#243B4A", p: "#F4A3A8", e: "#243B4A" },
+    "치즈": { o: "#F2A33A", w: "#FFF7EA", k: "#243B4A", p: "#E8667A", e: "#243B4A" },
     "구름": { o: "#A7A9B4", w: "#F4F4F6", k: "#243B4A", p: "#F4A3A8", e: "#243B4A" },
     "먹물": { o: "#3A3540", w: "#5D5766", k: "#16131A", p: "#E77F9A", e: "#F2D34A" },
   };

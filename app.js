@@ -127,17 +127,17 @@
     "..kk........kk..",
     ".kook......kook.",
     ".kooook..kooook.",
-    ".koooookkoooook.",
+    ".kookookkookook.",
     ".koookokkokoook.",
-    ".kooooooooooook.",
+    ".kkooooooooookk.",
     ".kooeooooooeook.",
-    ".kooowwwwwwooook",
+    ".kkoowwwwwwookk.",
     ".koowwwkppkwwook",
     ".koowwwwkkwwwook",
     "..kooowwwwooook.",
     "..kkkttttttkkk..",
     "...kooooooook...",
-    "...koookkoook...",
+    "...kokookokook..",
     "...kook..kook...",
     "...kkk...kkk....",
   ];
@@ -185,7 +185,7 @@
     applySettings();
     window.StartScene.mount({ motion: state.settings.motion !== false });
     const nameEl = $("#crew-name");
-    const bubbleFor = () => window.StartScene.setBubble(nameEl.value.trim() ? `${nameEl.value.trim()}, 같이 출항하자! 어흥` : "같이 출항하자! 어흥");
+    const bubbleFor = () => window.StartScene.setBubble(nameEl.value.trim() ? `${nameEl.value.trim()}, 같이 출항하자냥!` : "같이 출항하자냥!");
     bubbleFor(); nameEl.addEventListener("input", bubbleFor);
     $("#btn-start-reset").addEventListener("click", () => confirmReset(() => { localStorage.removeItem(STORAGE_KEY); location.reload(); }));
     $("#btn-arrive-go").addEventListener("click", () => { $("#arrive-overlay").hidden = true; enterGame(); });

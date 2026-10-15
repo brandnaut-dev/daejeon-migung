@@ -124,20 +124,20 @@
   const PAL = { k: "#243B4A", o: "#F2A33A", c: "#FFF4D6", a: "#F2B08A", t: "#236D75", p: "#F08AA0", n: "#E0675D", b: "#F7B2B7", e: "#243B4A", h: "#FFFFFF", w: "#FFF7EA", y: "#F6CD69" };
   // 나섬이 24×24 (72px 표시 = 3배) — o 주황, k 외곽·줄무늬, w 주둥이, n 코, p 혀·귀속, b 볼터치, e 눈, h 눈 하이라이트, t 스카프
   const BASE = [
-    "....kkk..........kkk....",
-    "...koook........koook...",
-    "...kopook......koopok...",
-    "...koooookkkkkkoooook...",
-    "..kooookokooookokooook..",
-    ".koooookokooookokoooook.",
+    "....kk............kk....",
+    "...kppk..........kppk...",
+    "...koppok......koppok...",
+    "..koooookkkkkkkkoooook..",
+    ".koooookkookkookkoooook.",
+    "kooooookkookkookkooooook",
     "kooooooooooooooooooooook",
-    "kkoooooooooooooooooooookk".slice(0, 24),
-    "kkkoooohe" + "oooooo" + "he" + "oooo" + "kkk",
-    "kkooooo" + "ee" + "oooooo" + "ee" + "ooooo" + "kk",
-    "kobb" + "oooooooooooooooo" + "bbok",
-    "kobboooowwwwwwwwoooobbok",
-    "koooooowwwwnnwwwwooooook",
-    "koooooowwwwwwwwwwooooook",
+    "kkkooooooooooooooooookkk",
+    "kkkooooheeooooeehooookkk",
+    "kkoooooeeeooooeeeoooookk",
+    "kkkooooooooooooooooookkk",
+    "kkoooooowwwwwwwwooooookk",
+    "kooooowwwwwnnwwwwwoooook",
+    "kooooowwkwwwwwwkwwoooook",
     ".kooooowwwkkkkwwwoooook.",
     ".koooooowwppppwwooooook.",
     "..kooooooowwwwoooooook..",
@@ -150,13 +150,13 @@
     "........................",
   ];
   const variant = (edits) => { const r = BASE.slice(); edits.forEach(([i, s]) => (r[i] = s)); return r; };
-  const HAPPY8 = "kkkooookk" + "oooooo" + "kk" + "oooo" + "kkk", HAPPY9 = "kkooooooooooooooooooookk";
+  const HAPPY8 = "kkkooookkkooookkkooookkk", HAPPY9 = "kkooooooooooooooooooookk";
   const NARU = {
     idle: BASE,
     wave: variant([[8, HAPPY8], [9, HAPPY9]]),
-    cheer: variant([[8, HAPPY8], [9, HAPPY9], [0, "y...kkk..........kkk...y"], [14, ".kooooowwkkkkkkwwoooook."]]),
-    think: variant([[8, "kkkooookk" + "oooooo" + "he" + "oooo" + "kkk"], [9, "kkooooooo" + "oooooo" + "ee" + "ooooo" + "kk"], [1, "...koook........koook..y"]]),
-    help: variant([[0, "....kkk..........kkk...y"], [15, ".koooooowwwwwwwwooooook."]]),
+    cheer: variant([[8, HAPPY8], [9, HAPPY9], [0, "y...kk............kk...y"], [14, ".kooooowwkkkkkkwwoooook."]]),
+    think: variant([[8, "kkkooookkkooooeehooookkk"], [9, "kkooooooooooooeeeoooookk"], [1, "...kppk..........kppk..y"]]),
+    help: variant([[0, "....kk............kk...y"], [15, ".koooooowwwwwwwwooooook."]]),
   };
   function drawPix(canvas, rows) { const h = rows.length, w = rows[0].length; canvas.width = w; canvas.height = h; const c = canvas.getContext("2d"); rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) { const col = PAL[row[x]]; if (col) { c.fillStyle = col; c.fillRect(x, y, 1, 1); } } }); }
   function setNaru(mood, text) { const c = $("#naru-side"); if (c) { c.dataset.mood = mood; drawPix(c, NARU[mood] || NARU.idle); } const s = $("#naru-say"); if (s && text) s.textContent = text; }

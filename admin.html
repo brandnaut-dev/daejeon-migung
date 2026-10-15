@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>미궁 진행자 화면 — 선원 기록</title>
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=7">
 <style>
   .admin { width: min(1360px, 100%); margin: 0 auto; padding: 24px; display: grid; gap: 16px; }
   .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
@@ -17,6 +17,8 @@
   table.crew th { background: var(--sky); font-weight: 650; position: sticky; top: 0; }
   table.crew td.idea { min-width: 200px; }
   table.crew tr.top3 td { background: #FFF6D6; }
+  button.del { border: 2px solid #C9D3D8; background: var(--white); color: var(--ink-soft); min-width: 30px; height: 30px; border-radius: 3px; font-size: 13px; padding: 0 8px; white-space: nowrap; }
+  button.del.armed { border-color: var(--danger); background: #FFECEA; color: var(--danger); font-weight: 650; }
   .bar { height: 10px; background: #E3E8EB; border: 1px solid var(--ink); position: relative; min-width: 80px; }
   .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--leaf); }
   .gate { max-width: 420px; margin: 80px auto; }
@@ -27,7 +29,7 @@
 </head>
 <body>
 <div class="admin" id="app"></div>
-<script src="config.js?v=6"></script>
+<script src="config.js?v=7"></script>
 <script>
 (function () {
   const CFG = window.MIGUNG_CONFIG || {};
@@ -61,7 +63,7 @@
     app.innerHTML = `
       <div class="toolbar">
         <div><div class="eyebrow">CAPTAIN VIEW</div><h2 style="margin:0">미궁 선원 기록 <span class="muted">${esc(CFG.CAMP_NAME || "")}</span></h2></div>
-        <div class="btn-row"><button type="button" class="btn btn-sm btn-ghost" id="refresh">새로고침</button><button type="button" class="btn btn-sm btn-ghost" id="csv">CSV 내려받기</button><label class="status"><input type="checkbox" id="auto" checked> 15초마다 자동 갱신</label></div>
+        <div class="btn-row"><button type="button" class="btn btn-sm btn-ghost" id="refresh">새로고침</button><button type="button" class="btn btn-sm btn-ghost" id="csv">CSV 내려받기</button><button type="button" class="btn btn-sm btn-ghost" id="reset-all" style="color:var(--danger)">전체 초기화</button><label class="status"><input type="checkbox" id="auto" checked> 15초마다 자동 갱신</label></div>
       </div>
       <p class="status" id="status"></p>
       <div class="kpis">
@@ -71,7 +73,7 @@
         <div class="kpi"><b>${assisted}</b><span>함께 풀기 사용 (문항 수 합계)</span></div>
       </div>
       <div class="table-wrap panel" style="padding:0;max-height:70vh;overflow:auto">
-        <table class="crew"><thead><tr><th>순위</th><th>이름</th><th>학과</th><th>완주 시간</th><th>진행</th><th>시도</th><th>힌트</th><th>정답보기</th><th>끌린 보물</th><th>이유</th><th>최근 갱신</th></tr></thead>
+        <table class="crew"><thead><tr><th>순위</th><th>이름</th><th>학과</th><th>완주 시간</th><th>진행</th><th>시도</th><th>힌트</th><th>정답보기</th><th>끌린 보물</th><th>이유</th><th>최근 갱신</th><th></th></tr></thead>
         <tbody>${rows.length ? rows.map((r, k) => { const rank = r.totalSec ? rows.filter((x) => x.totalSec).indexOf(r) + 1 : 0; return `<tr class="${rank && rank <= 3 ? "top3" : ""}">
           <td><b>${rank ? (rank <= 3 ? "🏆 " : "") + rank : '<span class="muted">진행중</span>'}</b></td>
           <td><b>${esc(r.name)}</b></td><td>${esc(r.dept)}</td>
@@ -79,7 +81,8 @@
           <td><div class="bar"><i style="width:${(+r.collected || 0) * 10}%"></i></div><span class="muted">${esc(r.collected || 0)}/10 · ${esc(r.currentPuzzleId || "")}</span></td>
           <td>${esc(r.attempts)}</td><td>${esc(r.hints)}</td><td>${esc(r.assisted)}</td>
           <td>${esc(r.picks)}</td><td class="idea">${esc(r.reason)}</td>
-          <td class="muted">${esc((r.updatedAt || "").replace("T", " ").slice(5, 16))}</td></tr>`; }).join("") : `<tr><td colspan="11" class="muted" style="padding:24px;text-align:center">아직 기록이 없어요.</td></tr>`}</tbody></table>
+          <td class="muted">${esc((r.updatedAt || "").replace("T", " ").slice(5, 16))}</td>
+          <td><button type="button" class="del" data-del="${esc(r.sessionId)}" data-name="${esc(r.name)}" title="이 선원 기록 삭제">✕</button></td></tr>`; }).join("") : `<tr><td colspan="12" class="muted" style="padding:24px;text-align:center">아직 기록이 없어요.</td></tr>`}</tbody></table>
       </div>
       ${CFG.SHEET_ENDPOINT ? "" : `<div class="panel"><h3>구글 시트가 연결되지 않았어요</h3><p>config.js의 <code>SHEET_ENDPOINT</code>에 Apps Script 웹앱 URL을 넣으면 선원들의 기록이 이 화면과 구글 시트에 쌓여요. 설정 방법은 저장소의 <code>apps-script/README.md</code>를 보세요.</p>
         <p class="muted">연결 전에는 학생이 결과 화면에서 내려받은 JSON 파일을 아래에 붙여 넣어 확인할 수 있어요.</p>
@@ -87,6 +90,8 @@
         <div class="btn-row end" style="margin-top:8px"><button type="button" class="btn btn-sm" id="add">추가</button></div></div>`}`;
     $("#refresh").onclick = fetchRows;
     $("#csv").onclick = downloadCsv;
+    $("#reset-all").onclick = resetAll;
+    app.querySelectorAll("[data-del]").forEach((b) => b.onclick = () => deleteRow(b.dataset.del, b.dataset.name, b));
     const add = $("#add"); if (add) add.onclick = () => { try { const j = JSON.parse($("#paste").value); rows.unshift(j.summary || j); render(); } catch (e) { alert("JSON을 읽을 수 없어요."); } };
   }
   function setStatus(t) { const s = $("#status"); if (s) s.textContent = t; }
@@ -99,6 +104,29 @@
       rows = (j.rows || []).map(normalizeRow).sort((a, b) => (a.totalSec || 1e9) - (b.totalSec || 1e9) || String(b.updatedAt).localeCompare(String(a.updatedAt)));
       render(); setStatus("갱신 " + new Date().toLocaleTimeString("ko-KR") + " · " + rows.length + "명");
     } catch (e) { render(); setStatus("불러오기 실패: " + e.message + " — 엔드포인트 URL과 배포 권한(모든 사용자)을 확인하세요."); }
+  }
+  // 삭제: 버튼을 두 번 눌러 확인 (alert/confirm 대신 인라인 확인)
+  async function deleteRow(sid, name, btn) {
+    if (!CFG.SHEET_ENDPOINT) { rows = rows.filter((r) => r.sessionId !== sid); render(); return; }
+    if (btn.dataset.armed !== "1") { btn.dataset.armed = "1"; btn.textContent = `${name} 삭제?`; btn.classList.add("armed"); setTimeout(() => { btn.dataset.armed = ""; btn.textContent = "✕"; btn.classList.remove("armed"); }, 4000); return; }
+    btn.disabled = true; btn.textContent = "…";
+    try {
+      const r = await fetch(CFG.SHEET_ENDPOINT + "?action=delete&sessionId=" + encodeURIComponent(sid) + "&key=" + encodeURIComponent(CFG.ADMIN_KEY || ""), { cache: "no-store" });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || "fail");
+      setStatus(`${name} 기록 삭제됨 (${j.deleted}행)`); fetchRows();
+    } catch (e) { setStatus("삭제 실패: " + e.message + " — Apps Script가 최신 버전인지 확인하세요."); btn.disabled = false; btn.textContent = "✕"; }
+  }
+  async function resetAll() {
+    const typed = prompt("모든 선원 기록을 지웁니다(시트 crew·events 탭 전체). 계속하려면 RESET 을 입력하세요.");
+    if (typed !== "RESET") { setStatus("초기화 취소"); return; }
+    if (!CFG.SHEET_ENDPOINT) { rows = []; render(); return; }
+    setStatus("초기화 중…");
+    try {
+      const r = await fetch(CFG.SHEET_ENDPOINT + "?action=reset&confirm=RESET&key=" + encodeURIComponent(CFG.ADMIN_KEY || ""), { cache: "no-store" });
+      const j = await r.json(); if (!j.ok) throw new Error(j.error || "fail");
+      setStatus(`초기화 완료 — crew ${j.cleared.crew || 0}행, events ${j.cleared.events || 0}행 삭제`); fetchRows();
+    } catch (e) { setStatus("초기화 실패: " + e.message); }
   }
   function downloadCsv() {
     const cols = ["name", "dept", "totalSec", "penaltySec", "collected", "attempts", "hints", "assisted", "picks", "reason", "startedAt", "finishedAt", "updatedAt", "sessionId", "puzzleDetail"];

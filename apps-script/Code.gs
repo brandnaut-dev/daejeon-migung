@@ -6,6 +6,7 @@
  *  - crew   : 선원(sessionId)별 최신 요약 1줄 (upsert) — 진행자 화면이 읽어 순위를 매긴다
  *
  * v2 변경: totalSec(완주 초), elapsedSec, penaltySec, picks, reason 컬럼 추가.
+ * v2.1: 진행자 화면에서 행 삭제(action=delete&sessionId=…) / 전체 초기화(action=reset) — ADMIN_KEY 필요.
  * 기존 crew 탭이 v1 헤더면 자동으로 v2 헤더로 바꾼다(기존 행은 유지, 새 컬럼은 비어 있음).
  *
  * 배포: 배포 > 배포 관리 > 연필 > 버전 "새 버전" > 배포 (URL은 그대로)
@@ -58,6 +59,18 @@ function doPost(e) {
 
 function doGet(e) {
   var p = (e && e.parameter) || {};
+  if (p.action === "delete") {
+    if (ADMIN_KEY && p.key !== ADMIN_KEY) return json_({ ok: false, error: "key" });
+    if (!p.sessionId) return json_({ ok: false, error: "sessionId" });
+    var n = deleteSession_(p.sessionId);
+    return json_({ ok: true, deleted: n });
+  }
+  if (p.action === "reset") {
+    if (ADMIN_KEY && p.key !== ADMIN_KEY) return json_({ ok: false, error: "key" });
+    if (p.confirm !== "RESET") return json_({ ok: false, error: "confirm" });
+    var r = resetAll_();
+    return json_({ ok: true, cleared: r });
+  }
   if (p.action === "crew") {
     if (ADMIN_KEY && p.key !== ADMIN_KEY) return json_({ ok: false, error: "key" });
     var sh = sheet_("crew", CREW_COLS);
@@ -72,6 +85,33 @@ function doGet(e) {
     return json_({ ok: true, rows: rows });
   }
   return json_({ ok: true, service: "migung", version: 2, time: new Date().toISOString() });
+}
+
+// sessionId에 해당하는 행을 crew·events 두 탭에서 제거
+function deleteSession_(sid) {
+  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    var n = 0;
+    [["crew", 0], ["events", 2]].forEach(function (t) {
+      var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(t[0]); if (!sh) return;
+      var data = sh.getDataRange().getValues();
+      for (var i = data.length - 1; i >= 1; i--) { if (String(data[i][t[1]]) === String(sid)) { sh.deleteRow(i + 1); n++; } }
+    });
+    return n;
+  } finally { lock.releaseLock(); }
+}
+// 헤더만 남기고 모두 비움
+function resetAll_() {
+  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    var out = {};
+    ["crew", "events"].forEach(function (name) {
+      var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(name); if (!sh) return;
+      var last = sh.getLastRow(); out[name] = Math.max(0, last - 1);
+      if (last > 1) sh.deleteRows(2, last - 1);
+    });
+    return out;
+  } finally { lock.releaseLock(); }
 }
 
 function json_(o) {

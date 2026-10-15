@@ -2,7 +2,7 @@
 // SHEET_ENDPOINT: Google Apps Script 웹앱 URL (apps-script/README.md 참고).
 // 비어 있으면 브라우저 로컬 저장 + 파일 내보내기만 동작한다.
 window.MIGUNG_CONFIG = {
-  SHEET_ENDPOINT: "",
+  SHEET_ENDPOINT: "https://script.google.com/macros/s/AKfycbyWda9U1ypv1g49itDaP5WliV9WRj_YLK7xMsTOlF6cXRf-a9vDYvQa0ZjIP-_X-VILXQ/exec",
   CAMP_NAME: "배재대학교 로컬 창업 캠프",
   PROGRAM_NAME: "LOCAL WAVE 0→1",
   GAME_TITLE: "미궁",
